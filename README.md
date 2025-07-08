@@ -34,15 +34,28 @@ curl -X POST https://api.prixe.io/api/last_sold \
 
 1. **Install dependencies**:
 ```bash
-npm install x402-fetch viem
+pip install eth_account x402 python-dotenv
 ```
 
 2. **Make autonomous payments**:
-```javascript
-import { wrapFetchWithPayment } from "x402-fetch";
+```python
+from eth_account import Account
+from x402.clients.requests import x402_requests
+import getpass
 
-const fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
-const response = await fetchWithPay('https://api.prixe.io/xpay/last_sold?ticker=AAPL');
+private_key = getpass.getpass(prompt="Enter your private key: ")
+
+endpoint = 'http://192.168.97.5:3000/xpay/last_sold?ticker=TSLA'
+print("\nendpoint: ", endpoint)
+
+# Initialize account
+account = Account.from_key(private_key)
+print(f"Initialized account: {account.address}")
+
+# Create session and make request
+session = x402_requests(account)
+response = session.get(endpoint)
+print(response.content)
 ```
 
 ## 🛠 API Endpoints
@@ -104,7 +117,7 @@ wss://api.prixe.io/ws/liveprice?api_key=YOUR_API_KEY
 - **Network**: Base Sepolia
 - **Currency**: USDC
 - **Facilitator**: https://x402.org/facilitator
-- **Wallet**: `0x9a39D71dc89B9974B260364178d3ff6B714592Ea`
+- **Wallet**: `0x15457430b10c46a28aF91c9b07a447CCB2576f8c`
 
 ## 📊 Example Response
 

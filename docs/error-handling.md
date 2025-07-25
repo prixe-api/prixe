@@ -524,7 +524,7 @@ try {
 
 If you encounter persistent errors:
 
-1. **Check API Status**: Visit [status.prixe.io](https://status.prixe.io)
+1. **Check API Status**: Visit [prixe.io/status](https://prixe.io/status)
 2. **Review Documentation**: Ensure correct API usage
 3. **Check Rate Limits**: Verify you're within your plan limits
 4. **Contact Support**: Email support@prixe.io with error details 

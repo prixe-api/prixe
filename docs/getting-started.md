@@ -6,13 +6,13 @@ Welcome to the Prixe Stock API! This guide will help you get up and running quic
 
 The Prixe API provides two authentication methods:
 - **API Key Authentication** (`/api/*` endpoints) - Traditional subscription-based access
-- **X402 Payments** (`/xpay/*` endpoints) - Pay-per-use for AI agents with cryptocurrency
+- **X402 Payments** (`/x402/*` endpoints) - Pay-per-use for AI agents with cryptocurrency
 
 ## 🔑 Method 1: API Key Authentication
 
 ### Step 1: Get Your API Key
 
-1. Visit [Prixe Dashboard](https://prixe.io/dashboard)
+1. Visit [Prixe Dashboard](https://prixe.io)
 2. Sign up or log into your account
 3. Navigate to the API section
 4. Generate your API key
@@ -134,7 +134,7 @@ const fetchWithPay = wrapFetchWithPayment(fetch, client);
 
 ```javascript
 // Get last sold data (costs $0.001)
-const response = await fetchWithPay(`${API_URL}/xpay/last_sold?ticker=AAPL`, {
+const response = await fetchWithPay(`${API_URL}/x402/last_sold?ticker=AAPL`, {
   method: "GET",
 });
 

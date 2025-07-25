@@ -82,17 +82,17 @@ class AutonomousStockAgent {
   }
 
   async getCurrentPrice(ticker) {
-    const endpoint = `/xpay/last_sold?ticker=${ticker}`;
+    const endpoint = `/x402/last_sold?ticker=${ticker}`;
     return this.makePaymentRequest(endpoint);
   }
 
   async searchStocks(query) {
-    const endpoint = `/xpay/search?query=${encodeURIComponent(query)}`;
+    const endpoint = `/x402/search?query=${encodeURIComponent(query)}`;
     return this.makePaymentRequest(endpoint);
   }
 
   async getHistoricalData(ticker, startDate, endDate, interval = '1d') {
-    const endpoint = `/xpay/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=${interval}`;
+    const endpoint = `/x402/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=${interval}`;
     return this.makePaymentRequest(endpoint);
   }
 

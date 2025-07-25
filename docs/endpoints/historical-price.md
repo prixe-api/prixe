@@ -7,7 +7,7 @@ Get historical OHLCV (Open, High, Low, Close, Volume) price data for any stock t
 | Method | Endpoint | Authentication |
 |--------|----------|----------------|
 | `POST` | `/api/price` | API Key |
-| `GET` | `/xpay/price` | X402 Payment ($0.005) |
+| `GET` | `/x402/price` | X402 Payment ($0.005) |
 
 **Base URL**: `https://api.prixe.io`
 
@@ -166,7 +166,7 @@ const startDate = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60); // 30 day
 const endDate = Math.floor(Date.now() / 1000); // now
 
 const response = await fetchWithPay(
-  `https://api.prixe.io/xpay/price?ticker=AAPL&start_date=${startDate}&end_date=${endDate}&interval=1d`,
+  `https://api.prixe.io/x402/price?ticker=AAPL&start_date=${startDate}&end_date=${endDate}&interval=1d`,
   { method: 'GET' }
 );
 
@@ -180,79 +180,9 @@ if (response.ok) {
 
 ```json
 {
-  "data": {
-    "body": {
-      "chart": {
-        "error": null,
-        "result": [
-          {
-            "meta": {
-              "currency": "USD",
-              "symbol": "MSFT",
-              "exchangeName": "NMS",
-              "instrumentType": "EQUITY",
-              "regularMarketPrice": 425.4
-            },
-            "timestamp": [
-              1735828200,
-              1735914600,
-              1736173800
-            ],
-            "indicators": {
-              "quote": [
-                {
-                  "open": [
-                    425.5299987792969,
-                    421.0799865722656,
-                    428
-                  ],
-                  "high": [
-                    426.07000732421875,
-                    424.0299987792969,
-                    434.32000732421875
-                  ],
-                  "low": [
-                    414.8500061035156,
-                    419.5400085449219,
-                    425.4800109863281
-                  ],
-                  "close": [
-                    418.5799865722656,
-                    423.3500061035156,
-                    427.8500061035156
-                  ],
-                  "volume": [
-                    16896500,
-                    16662900,
-                    20573600
-                  ]
-                }
-              ],
-              "adjclose": [
-                {
-                  "adjclose": [
-                    417.74237060546875,
-                    422.5028381347656,
-                    426.99383544921875
-                  ]
-                }
-              ]
-            },
-            "events": {
-              "dividends": {
-                "1740061800": {
-                  "amount": 0.83,
-                  "date": 1740061800
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
-    "statusCode": 200
-  },
-  "success": true
+    "lastSalePrice": "$214.05",
+    "lastTradeTimestamp": "Jul 24, 2025 7:59 PM ET",
+    "ticker": "AAPL"
 }
 ```
 
@@ -426,7 +356,7 @@ async function getChartData(ticker, days = 30) {
   const startDate = endDate - (days * 24 * 60 * 60);
   
   const response = await fetchWithPay(
-    `https://api.prixe.io/xpay/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=1d`,
+    `https://api.prixe.io/x402/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=1d`,
     { method: 'GET' }
   );
   

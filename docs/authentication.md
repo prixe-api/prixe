@@ -87,7 +87,7 @@ The x402 payment protocol enables AI agents to autonomously pay for API access u
 
 ### How It Works
 
-1. **Request**: AI agent makes request to `/xpay/*` endpoint
+1. **Request**: AI agent makes request to `/x402/*` endpoint
 2. **Payment Required**: Server responds with 402 status and payment requirements
 3. **Payment**: x402-fetch automatically creates payment transaction
 4. **Verification**: Server validates payment and returns data
@@ -97,7 +97,7 @@ The x402 payment protocol enables AI agents to autonomously pay for API access u
 - **Blockchain**: Base Sepolia
 - **Currency**: USDC
 - **Facilitator**: https://x402.org/facilitator
-- **Wallet Address**: `0x9a39D71dc89B9974B260364178d3ff6B714592Ea`
+- **Wallet Address**: `0xa2477E16dCB42E2AD80f03FE97D7F1a1646cd1c0`
 
 ### Setup Requirements
 
@@ -148,7 +148,7 @@ const fetchWithPay = wrapFetchWithPayment(fetch, client);
 
 // Make paid request
 const response = await fetchWithPay(
-  'https://api.prixe.io/xpay/last_sold?ticker=AAPL',
+  'https://api.prixe.io/x402/last_sold?ticker=AAPL',
   { method: 'GET' }
 );
 
@@ -162,9 +162,9 @@ if (response.ok) {
 
 | Endpoint | Price per Request |
 |----------|------------------|
-| `/xpay/last_sold` | $0.001 |
-| `/xpay/search` | $0.001 |
-| `/xpay/price` | $0.005 |
+| `/x402/last_sold` | $0.001 |
+| `/x402/search` | $0.001 |
+| `/x402/price` | $0.005 |
 
 ### Error Handling
 
@@ -225,14 +225,14 @@ try {
 1. Set up wallet with USDC on Base Sepolia
 2. Install x402-fetch and viem libraries
 3. Replace API key requests with x402 payment requests
-4. Update endpoint URLs from `/api/*` to `/xpay/*`
+4. Update endpoint URLs from `/api/*` to `/x402/*`
 5. Handle payment-specific errors
 
 ### From X402 to API Key
 
 1. Sign up for Prixe account and get API key
 2. Replace x402 payment calls with authenticated requests
-3. Update endpoint URLs from `/xpay/*` to `/api/*`
+3. Update endpoint URLs from `/x402/*` to `/api/*`
 4. Remove x402-fetch dependency
 5. Implement rate limiting logic
 

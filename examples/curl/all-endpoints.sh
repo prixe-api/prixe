@@ -188,9 +188,9 @@ make_request "/api/price" "POST" "{
 echo -e "\n${BLUE}=== X402 Payment Examples (Requires x402-fetch) ===${NC}"
 echo -e "${YELLOW}Note: These endpoints require x402 payment protocol and cannot be called directly with cURL${NC}"
 echo -e "X402 endpoints:"
-echo -e "  GET $BASE_URL/xpay/last_sold?ticker=AAPL (\$0.001)"
-echo -e "  GET $BASE_URL/xpay/search?query=Tesla (\$0.001)"
-echo -e "  GET $BASE_URL/xpay/price?ticker=MSFT&start_date=...&end_date=...&interval=1d (\$0.005)"
+echo -e "  GET $BASE_URL/x402/last_sold?ticker=AAPL (\$0.001)"
+echo -e "  GET $BASE_URL/x402/search?query=Tesla (\$0.001)"
+echo -e "  GET $BASE_URL/x402/price?ticker=MSFT&start_date=...&end_date=...&interval=1d (\$0.005)"
 
 # Summary
 echo -e "\n${GREEN}=== Summary ===${NC}"

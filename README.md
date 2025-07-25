@@ -19,7 +19,7 @@
 
 ### Traditional API Key Authentication
 
-1. **Get your API key** from [Prixe Dashboard](https://prixe.io/dashboard)
+1. **Get your API key** from [Prixe Dashboard](https://prixe.io)
 
 2. **Make your first request**:
 
@@ -45,7 +45,7 @@ import getpass
 
 private_key = getpass.getpass(prompt="Enter your private key: ")
 
-endpoint = 'http://192.168.97.5:3000/xpay/last_sold?ticker=TSLA'
+endpoint = 'https://api.prixe.io/x402/last_sold?ticker=TSLA'
 print("\nendpoint: ", endpoint)
 
 # Initialize account
@@ -66,9 +66,9 @@ print(response.content)
 | [`/api/price`](./docs/endpoints/historical-price.md) | Historical OHLCV data | API Key | Subscription |
 | [`/api/search`](./docs/endpoints/search.md) | Search stocks by name/ticker | API Key | Subscription |
 | [`/ws/liveprice`](./docs/endpoints/websocket.md) | Real-time WebSocket stream | API Key | Subscription |
-| [`/xpay/last_sold`](./docs/endpoints/x402-payments.md) | Current price via x402 | x402 Payment | $0.001 |
-| [`/xpay/price`](./docs/endpoints/x402-payments.md) | Historical data via x402 | x402 Payment | $0.005 |
-| [`/xpay/search`](./docs/endpoints/x402-payments.md) | Search via x402 | x402 Payment | $0.001 |
+| [`/x402/last_sold`](./docs/endpoints/x402-payments.md) | Current price via x402 | x402 Payment | $0.001 |
+| [`/x402/price`](./docs/endpoints/x402-payments.md) | Historical data via x402 | x402 Payment | $0.005 |
+| [`/x402/search`](./docs/endpoints/x402-payments.md) | Search via x402 | x402 Payment | $0.001 |
 
 ## 📚 Documentation
 
@@ -117,7 +117,7 @@ wss://api.prixe.io/ws/liveprice?api_key=YOUR_API_KEY
 - **Network**: Base Sepolia
 - **Currency**: USDC
 - **Facilitator**: https://x402.org/facilitator
-- **Wallet**: `0x15457430b10c46a28aF91c9b07a447CCB2576f8c`
+- **Wallet**: `0xa2477E16dCB42E2AD80f03FE97D7F1a1646cd1c0`
 
 ## 📊 Example Response
 

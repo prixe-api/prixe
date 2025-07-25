@@ -7,7 +7,7 @@ Get real-time stock price data including last sale price, bid/ask spreads, tradi
 | Method | Endpoint | Authentication |
 |--------|----------|----------------|
 | `POST` | `/api/last_sold` | API Key |
-| `GET` | `/xpay/last_sold` | X402 Payment ($0.001) |
+| `GET` | `/x402/last_sold` | X402 Payment ($0.0002) |
 
 **Base URL**: `https://api.prixe.io`
 
@@ -100,7 +100,7 @@ import { wrapFetchWithPayment } from "x402-fetch";
 const fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
 
 const response = await fetchWithPay(
-  'https://api.prixe.io/xpay/last_sold?ticker=TSLA',
+  'https://api.prixe.io/x402/last_sold?ticker=TSLA',
   { method: 'GET' }
 );
 
@@ -238,7 +238,7 @@ Use x402 payments for autonomous trading decisions:
 const checkStockPrice = async (ticker) => {
   try {
     const response = await fetchWithPay(
-      `https://api.prixe.io/xpay/last_sold?ticker=${ticker}`,
+      `https://api.prixe.io/x402/last_sold?ticker=${ticker}`,
       { method: 'GET' }
     );
     

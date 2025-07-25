@@ -10,19 +10,19 @@ Enable autonomous AI agents to pay for API access using cryptocurrency payments 
 | **Network** | Base Sepolia |
 | **Currency** | USDC |
 | **Facilitator** | https://x402.org/facilitator |
-| **Wallet** | `0x9a39D71dc89B9974B260364178d3ff6B714592Ea` |
+| **Wallet** | `0xa2477E16dCB42E2AD80f03FE97D7F1a1646cd1c0` |
 
 ## 💰 Available Endpoints
 
 | Endpoint | Price | Description |
 |----------|-------|-------------|
-| `/xpay/last_sold` | $0.001 | Current stock price data |
-| `/xpay/search` | $0.001 | Search stocks by name/ticker |
-| `/xpay/price` | $0.005 | Historical OHLCV data |
+| `/x402/last_sold` | $0.001 | Current stock price data |
+| `/x402/search` | $0.001 | Search stocks by name/ticker |
+| `/x402/price` | $0.005 | Historical OHLCV data |
 
 ## 🔄 Payment Flow
 
-1. **Request**: AI agent makes GET request to `/xpay/*` endpoint
+1. **Request**: AI agent makes GET request to `/x402/*` endpoint
 2. **402 Response**: Server responds with payment requirements
 3. **Payment**: x402-fetch creates payment transaction
 4. **Retry**: Request retried with payment header
@@ -78,7 +78,7 @@ async function main() {
   try {
     // Get last sold data ($0.001)
     const lastSoldResponse = await fetchWithPay(
-      `${API_URL}/xpay/last_sold?ticker=AAPL`,
+      `${API_URL}/x402/last_sold?ticker=AAPL`,
       { method: "GET" }
     );
     
@@ -89,7 +89,7 @@ async function main() {
 
     // Search for stocks ($0.001)
     const searchResponse = await fetchWithPay(
-      `${API_URL}/xpay/search?query=Tesla`,
+      `${API_URL}/x402/search?query=Tesla`,
       { method: "GET" }
     );
     
@@ -103,7 +103,7 @@ async function main() {
     const endDate = Math.floor(Date.now() / 1000);
     
     const priceResponse = await fetchWithPay(
-      `${API_URL}/xpay/price?ticker=MSFT&start_date=${startDate}&end_date=${endDate}&interval=1d`,
+      `${API_URL}/x402/price?ticker=MSFT&start_date=${startDate}&end_date=${endDate}&interval=1d`,
       { method: "GET" }
     );
     
@@ -144,7 +144,7 @@ class AutonomousTradingBot {
 
   async getCurrentPrice(ticker) {
     const response = await this.fetchWithPay(
-      `${this.apiUrl}/xpay/last_sold?ticker=${ticker}`,
+      `${this.apiUrl}/x402/last_sold?ticker=${ticker}`,
       { method: 'GET' }
     );
     
@@ -160,7 +160,7 @@ class AutonomousTradingBot {
     const startDate = endDate - (30 * 24 * 60 * 60); // 30 days
     
     const response = await this.fetchWithPay(
-      `${this.apiUrl}/xpay/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=1d`,
+      `${this.apiUrl}/x402/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=1d`,
       { method: 'GET' }
     );
     
@@ -207,7 +207,7 @@ class AIResearchAssistant {
 
   async searchCompany(companyName) {
     const response = await this.fetchWithPay(
-      `${this.apiUrl}/xpay/search?query=${encodeURIComponent(companyName)}`,
+      `${this.apiUrl}/x402/search?query=${encodeURIComponent(companyName)}`,
       { method: 'GET' }
     );
     
@@ -286,7 +286,7 @@ class CostOptimizedAgent {
   async getPrice(ticker) {
     return this.getCachedData(`price_${ticker}`, async () => {
       const response = await this.fetchWithPay(
-        `https://api.prixe.io/xpay/last_sold?ticker=${ticker}`,
+        `https://api.prixe.io/x402/last_sold?ticker=${ticker}`,
         { method: 'GET' }
       );
       return response.json();

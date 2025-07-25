@@ -7,7 +7,7 @@ Search for stocks by ticker symbol, company name, or CUSIP identifier. This endp
 | Method | Endpoint | Authentication |
 |--------|----------|----------------|
 | `POST` | `/api/search` | API Key |
-| `GET` | `/xpay/search` | X402 Payment ($0.001) |
+| `GET` | `/x402/search` | X402 Payment ($0.0002) |
 
 **Base URL**: `https://api.prixe.io`
 
@@ -110,7 +110,7 @@ import { wrapFetchWithPayment } from "x402-fetch";
 const fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
 
 const response = await fetchWithPay(
-  'https://api.prixe.io/xpay/search?query=Apple',
+  'https://api.prixe.io/x402/search?query=Apple',
   { method: 'GET' }
 );
 
@@ -332,7 +332,7 @@ Find all related securities for a company:
 ```javascript
 async function findCompanySecurities(companyName) {
   const response = await fetchWithPay(
-    `https://api.prixe.io/xpay/search?query=${encodeURIComponent(companyName)}`,
+    `https://api.prixe.io/x402/search?query=${encodeURIComponent(companyName)}`,
     { method: 'GET' }
   );
   

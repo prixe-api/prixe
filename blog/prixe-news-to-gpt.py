@@ -15,7 +15,7 @@ def fetch_news(api_key, ticker="GLD"):
     all_news = []
     if data.get("success"):
         news_items = data.get("news_data", {}).get("data", [])
-        print(f"Found {len(news_items)} Articles")
+        print(f"Prixe Found {len(news_items)} Articles")
         print("--------------------------------")
         for item in news_items:
             if item.get("body"):

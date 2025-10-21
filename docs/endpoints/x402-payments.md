@@ -1,56 +1,58 @@
 # X402 Payment Integration for AI Agents
 
-Enable autonomous AI agents to pay for API access using cryptocurrency payments on the Base Sepolia network. No API key management required.
+AI agents can use the x402 payment protocol to pay for API access without requiring traditional API keys. This enables autonomous systems to make paid API calls using cryptocurrency payments on the Base Sepolia network.
 
-## 📋 Overview
+### Benefits
+- No API key management required
+- Pay-per-use model with micro-payments
+- Autonomous operation for AI agents
+- Decentralized payment verification
+- Automatic payment handling via x402-fetch
 
-| Feature | Details |
-|---------|---------|
-| **Protocol** | X402 Payment Protocol |
-| **Network** | Base Sepolia |
-| **Currency** | USDC |
-| **Facilitator** | https://x402.org/facilitator |
-| **Wallet** | `0xa2477E16dCB42E2AD80f03FE97D7F1a1646cd1c0` |
+### Overview
+| Protocol | Network | Currency | Facilitator URL | Wallet Address | Other Documentation |
+|---|---|---|---|---|---|
+| x402 Payment Protocol | base | USDC | https://x402.org/facilitator | 0x15457430b10c46a28aF91c9b07a447CCB2576f8c | https://x402.gitbook.io/x402/getting-started/quickstart-for-buyers |
 
-## 💰 Available Endpoints
+### Payment Flow
+1. AI agent makes request to `/x402/` endpoint
+2. Server responds with 402 Payment Required and payment requirements
+3. x402-fetch automatically creates payment transaction on Base Sepolia
+4. Payment header is generated and added to retry request
+5. Server validates payment and returns requested data
 
-| Endpoint | Price | Description |
-|----------|-------|-------------|
-| `/x402/last_sold` | $0.001 | Current stock price data |
-| `/x402/search` | $0.001 | Search stocks by name/ticker |
-| `/x402/price` | $0.005 | Historical OHLCV data |
-
-## 🔄 Payment Flow
-
-1. **Request**: AI agent makes GET request to `/x402/*` endpoint
-2. **402 Response**: Server responds with payment requirements
-3. **Payment**: x402-fetch creates payment transaction
-4. **Retry**: Request retried with payment header
-5. **Success**: Server validates payment and returns data
-
-## 🛠 Setup Requirements
-
+### Requirements
 - Wallet with USDC on Base Sepolia network
 - Private key for transaction signing
-- x402-fetch library for payment handling
+- x402-fetch library or custom x402 implementation
 - viem library for wallet client creation
 
-## 📦 Installation
+### Setup Instructions
+1. Follow instructions at https://x402.gitbook.io/x402/getting-started/quickstart-for-buyers
+2. Set up a wallet client using viem with your private key
+3. Wrap the native fetch function with x402 payment handling
+4. Make requests to `/x402/` endpoints - payments will be handled automatically
 
-```bash
-npm install x402-fetch viem dotenv
-```
+### Available Endpoints
+| Path | Description | Price | Request Method |
+|---|---|---|---|
+| `/x402/last_sold` | Access to stock last sold price data | $0.0002 | GET |
+| `/x402/search` | Search for tickers, company names, or CUSIPs | $0.0002 | GET |
+| `/x402/price` | Historical price data | $0.0002 | GET |
+| `/x402/news` | Get news data | $0.0004 | GET |
 
-## ⚙️ Environment Setup
+### Errors
+| Status | Message | Description |
+|---|---|---|
+| 402 | `Payment Required` | Initial response requiring payment - handled automatically by x402-fetch |
+| 400 | `Invalid payment` | Payment verification failed or insufficient payment amount |
+| 404 | `Endpoint not found` | The requested /x402/ endpoint does not exist |
+| 500 | `Internal server error` | An error occurred processing the request |
 
-Create `.env` file:
-```env
-PRIVATE_KEY=0x... # Your wallet private key
-API_URL=https://api.prixe.io
-```
-
-## 💻 Complete Example
-
+### Code Examples
+````mdx
+<Tabs>
+<TabItem value="JavaScript">
 ```javascript
 import { config } from "dotenv";
 import { createWalletClient, http } from "viem";
@@ -62,251 +64,120 @@ config();
 
 const { PRIVATE_KEY, API_URL } = process.env;
 
-// Create wallet client
-const account = privateKeyToAccount(PRIVATE_KEY);
+const account = privateKeyToAccount(PRIVATE_KEY as `0x${string}`);
 const client = createWalletClient({
   account,
   transport: http(),
   chain: baseSepolia,
 });
 
-// Wrap fetch with payment handling
 const fetchWithPay = wrapFetchWithPayment(fetch, client);
 
-// Example usage
-async function main() {
-  try {
-    // Get last sold data ($0.001)
-    const lastSoldResponse = await fetchWithPay(
-      `${API_URL}/x402/last_sold?ticker=AAPL`,
-      { method: "GET" }
-    );
-    
-    if (lastSoldResponse.ok) {
-      const data = await lastSoldResponse.json();
-      console.log('AAPL data:', data);
-    }
-
-    // Search for stocks ($0.001)
-    const searchResponse = await fetchWithPay(
-      `${API_URL}/x402/search?query=Tesla`,
-      { method: "GET" }
-    );
-    
-    if (searchResponse.ok) {
-      const results = await searchResponse.json();
-      console.log('Search results:', results);
-    }
-
-    // Get historical data ($0.005)
-    const startDate = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
-    const endDate = Math.floor(Date.now() / 1000);
-    
-    const priceResponse = await fetchWithPay(
-      `${API_URL}/x402/price?ticker=MSFT&start_date=${startDate}&end_date=${endDate}&interval=1d`,
-      { method: "GET" }
-    );
-    
-    if (priceResponse.ok) {
-      const priceData = await priceResponse.json();
-      console.log('MSFT price data:', priceData);
-    }
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-main();
-```
-
-## 🚀 Use Cases
-
-### Autonomous Trading Bot
-
-```javascript
-class AutonomousTradingBot {
-  constructor(walletClient) {
-    this.fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
-    this.apiUrl = 'https://api.prixe.io';
-  }
-
-  async analyzeStock(ticker) {
-    // Get current price
-    const currentPrice = await this.getCurrentPrice(ticker);
-    
-    // Get historical data for analysis
-    const historicalData = await this.getHistoricalData(ticker);
-    
-    // Make trading decision
-    return this.makeDecision(currentPrice, historicalData);
-  }
-
-  async getCurrentPrice(ticker) {
-    const response = await this.fetchWithPay(
-      `${this.apiUrl}/x402/last_sold?ticker=${ticker}`,
-      { method: 'GET' }
-    );
-    
+// Example: Get last sold data
+fetchWithPay(`${API_URL}/x402/last_sold?ticker=TSLA`, {
+  method: "GET",
+})
+  .then(async response => {
     if (response.ok) {
       const data = await response.json();
-      return parseFloat(data.lastSalePrice.replace('$', ''));
+      console.log('Tesla last sold data:', data);
     }
-    throw new Error('Failed to get current price');
-  }
+  })
+  .catch(error => console.error('Error:', error));
 
-  async getHistoricalData(ticker) {
-    const endDate = Math.floor(Date.now() / 1000);
-    const startDate = endDate - (30 * 24 * 60 * 60); // 30 days
-    
-    const response = await this.fetchWithPay(
-      `${this.apiUrl}/x402/price?ticker=${ticker}&start_date=${startDate}&end_date=${endDate}&interval=1d`,
-      { method: 'GET' }
-    );
-    
+// Example: Search for stocks
+fetchWithPay(`${API_URL}/x402/search?query=Apple`, {
+  method: "GET",
+})
+  .then(async response => {
     if (response.ok) {
-      return response.json();
+      const results = await response.json();
+      console.log('Search results:', results);
     }
-    throw new Error('Failed to get historical data');
-  }
-}
-```
+  })
+  .catch(error => console.error('Error:', error));
 
-### AI Research Assistant
+// Example: Get historical price data
+const startDate = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60); // 30 days ago
+const endDate = Math.floor(Date.now() / 1000); // now
 
-```javascript
-class AIResearchAssistant {
-  constructor(walletClient) {
-    this.fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
-    this.apiUrl = 'https://api.prixe.io';
-  }
-
-  async researchCompany(companyName) {
-    // Search for the company
-    const searchResults = await this.searchCompany(companyName);
-    
-    if (searchResults.length === 0) {
-      return { error: 'Company not found' };
-    }
-
-    const ticker = searchResults[0].ticker;
-    
-    // Get comprehensive data
-    const [currentData, historicalData] = await Promise.all([
-      this.getCurrentData(ticker),
-      this.getHistoricalData(ticker, 365) // 1 year
-    ]);
-
-    return {
-      company: searchResults[0],
-      currentPrice: currentData,
-      historicalPerformance: historicalData,
-      analysis: this.performAnalysis(currentData, historicalData)
-    };
-  }
-
-  async searchCompany(companyName) {
-    const response = await this.fetchWithPay(
-      `${this.apiUrl}/x402/search?query=${encodeURIComponent(companyName)}`,
-      { method: 'GET' }
-    );
-    
-    return response.ok ? response.json() : [];
-  }
-
-  performAnalysis(current, historical) {
-    // Implement AI analysis logic
-    return {
-      trend: 'bullish',
-      volatility: 'medium',
-      recommendation: 'hold'
-    };
-  }
-}
-```
-
-## ⚠️ Error Handling
-
-```javascript
-async function handleX402Request(url, options = {}) {
-  try {
-    const response = await fetchWithPay(url, options);
-    
+fetchWithPay(`${API_URL}/x402/price?ticker=AAPL&start_date=${startDate}&end_date=${endDate}&interval=1d`, {
+  method: "GET",
+})
+  .then(async response => {
     if (response.ok) {
-      return await response.json();
-    } else {
-      console.error(`Request failed: ${response.status} ${response.statusText}`);
+      const priceData = await response.json();
+      console.log('AAPL price data:', priceData);
     }
-  } catch (error) {
-    if (error.message.includes('insufficient funds')) {
-      console.error('Not enough USDC in wallet');
-      // Implement fund wallet logic
-    } else if (error.message.includes('payment verification failed')) {
-      console.error('Payment could not be verified');
-      // Retry or escalate
-    } else if (error.message.includes('network')) {
-      console.error('Network connectivity issues');
-      // Implement retry with backoff
-    } else {
-      console.error('Unexpected error:', error.message);
+  })
+  .catch(error => console.error('Error:', error));
+
+// Example: Get news data
+fetchWithPay(`${API_URL}/x402/news?ticker=NVDA`, {
+  method: "GET",
+})
+  .then(async response => {
+    if (response.ok) {
+      const newsData = await response.json();
+      console.log('NVIDIA news data:', newsData);
     }
-  }
-}
+  })
+  .catch(error => console.error('Error:', error));
 ```
+</TabItem>
+<TabItem value="Python">
+```python
+from eth_account import Account
+from x402.clients.requests import x402_requests
 
-## 🔒 Security Best Practices
+# Initialize account with your private key
+private_key = "YOUR_PRIVATE_KEY_HERE"  # Replace with your actual private key
+account = Account.from_key(private_key)
+print(f"Initialized account: {account.address}")
 
-1. **Private Key Security**: Store private keys securely and never expose them
-2. **Wallet Separation**: Use dedicated wallets for different applications
-3. **Spending Limits**: Implement spending limits to prevent excessive costs
-4. **Transaction Monitoring**: Monitor wallet transactions for anomalies
-5. **Network Security**: Ensure secure connection to Base Sepolia network
+# Create x402 session
+session = x402_requests(account)
 
-## 📊 Cost Optimization
+# Example: Get last sold data for Tesla
+response = session.get('https://api.prixe.io/x402/last_sold?ticker=TSLA')
+if response.status_code == 200:
+    data = response.json()
+    print('Tesla last sold data:', data)
+    # Output: {'askPrice': '$339.97', 'bidPrice': '$339.76', ...}
+else:
+    print(f'Error: {response.status_code} - {response.text}')
 
-```javascript
-class CostOptimizedAgent {
-  constructor(walletClient) {
-    this.fetchWithPay = wrapFetchWithPayment(fetch, walletClient);
-    this.cache = new Map();
-    this.cacheTTL = 60000; // 1 minute
-  }
+# Example: Search for stocks
+response = session.get('https://api.prixe.io/x402/search?query=Apple')
+if response.status_code == 200:
+    search_results = response.json()
+    print('Search results:', search_results)
+    # Output: [{'stockName': 'Apple Inc.', 'ticker': 'AAPL', 'cusip': '037833100'}]
+else:
+    print(f'Error: {response.status_code} - {response.text}')
 
-  async getCachedData(key, fetcher) {
-    const cached = this.cache.get(key);
-    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
-      return cached.data;
-    }
+# Example: Get historical price data (last 30 days)
+import time
+start_date = int(time.time()) - (30 * 24 * 60 * 60)  # 30 days ago
+end_date = int(time.time())  # now
 
-    const data = await fetcher();
-    this.cache.set(key, { data, timestamp: Date.now() });
-    return data;
-  }
+response = session.get(f'https://api.prixe.io/x402/price?ticker=AAPL&start_date={start_date}&end_date={end_date}&interval=1d')
+if response.status_code == 200:
+    price_data = response.json()
+    print('AAPL historical price data received')
+    # Contains OHLCV data in Yahoo Finance chart format
+else:
+    print(f'Error: {response.status_code} - {response.text}')
 
-  async getPrice(ticker) {
-    return this.getCachedData(`price_${ticker}`, async () => {
-      const response = await this.fetchWithPay(
-        `https://api.prixe.io/x402/last_sold?ticker=${ticker}`,
-        { method: 'GET' }
-      );
-      return response.json();
-    });
-  }
-}
+# Example: Get news data for NVIDIA
+response = session.get('https://api.prixe.io/x402/news?ticker=NVDA')
+if response.status_code == 200:
+    news_data = response.json()
+    print('NVIDIA news data:', news_data)
+    # Output: {'success': True, 'news_data': {'count': 5, 'data': [...]}}
+else:
+    print(f'Error: {response.status_code} - {response.text}')
 ```
-
-## 🔗 Related Documentation
-
-- [Authentication Guide](../authentication.md)
-- [X402 Protocol Documentation](https://x402.gitbook.io/)
-- [Base Sepolia Network](https://docs.base.org/tools/network-information)
-- [USDC on Base](https://www.centre.io/usdc)
-
-## 💡 Tips for AI Agents
-
-1. **Implement caching** to reduce costs
-2. **Batch requests** when possible
-3. **Monitor wallet balance** and refill automatically
-4. **Use appropriate intervals** for data requests
-5. **Implement circuit breakers** for cost control
-6. **Log all transactions** for audit purposes 
+</TabItem>
+</Tabs>
+```` 

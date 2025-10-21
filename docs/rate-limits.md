@@ -26,7 +26,7 @@ Understanding and respecting rate limits ensures optimal performance and prevent
 
 Contact us for custom rate limits:
 
-- **Email**: sales@prixe.io
+- **Email**: help@prixe.io
 - **Enterprise Plans**: Custom limits available
 - **Dedicated Infrastructure**: For high-volume applications
 - **White-label Solutions**: For resellers and platforms

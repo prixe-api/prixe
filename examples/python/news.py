@@ -1,6 +1,6 @@
 import requests
 
-url = "https://api.prixe.io/api/last_sold"
+url = "https://api.prixe.io/api/news"
 headers = {
     "Authorization": "Bearer YOUR_API_KEY",
     "Content-Type": "application/json"
@@ -11,4 +11,4 @@ payload = {
 
 response = requests.post(url, headers=headers, json=payload)
 data = response.json()
-print(data) 
+print(data)

@@ -30,34 +30,6 @@ curl -X POST https://api.prixe.io/api/last_sold \
   -d '{"ticker": "AAPL"}'
 ```
 
-### X402 Payments for AI Agents
-
-1. **Install dependencies**:
-```bash
-pip install eth_account x402 python-dotenv
-```
-
-2. **Make autonomous payments**:
-```python
-from eth_account import Account
-from x402.clients.requests import x402_requests
-import getpass
-
-private_key = getpass.getpass(prompt="Enter your private key: ")
-
-endpoint = 'https://api.prixe.io/x402/last_sold?ticker=TSLA'
-print("\nendpoint: ", endpoint)
-
-# Initialize account
-account = Account.from_key(private_key)
-print(f"Initialized account: {account.address}")
-
-# Create session and make request
-session = x402_requests(account)
-response = session.get(endpoint)
-print(response.content)
-```
-
 ## 🛠 API Endpoints
 
 | Endpoint | Description | Auth Type | Price |
